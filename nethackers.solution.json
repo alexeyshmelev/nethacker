@@ -1,28 +1,12 @@
 {
   "schema": "nethackers.solution/v1",
-  "name": "identity-portfolio-top17",
+  "name": "private-leader-samurai-router",
   "root": ".",
   "parents": [
-    "github.com/daglar-dragomirov/nethacker@8ce023a8f681e7366d5f54ca419f314ac874ac59"
+    "github.com/daglar-dragomirov/nethacker@5d0d455a1585271143aa47fbd5b44c2f6dae7d4b"
   ],
   "influences": [
-    "github.com/DT6A/nethacker@02f00ae3fe4b30291c279108c62c6d72d2edf3b9",
-    "github.com/DT6A/nethacker@cef22c69a86b5820fd1242f9671208a06e80efd7",
-    "github.com/DT6A/nethacker@d956abff7baa169d549a8d12fa1d219412833b67",
-    "github.com/Komershan/nethacker@5520db0a6f9ffbcd64c19443bf71746d7c403b69",
-    "github.com/Komershan/nethacker@6073d88ea81f05d20c46c57b8fb9a38a54bfe75e",
-    "github.com/Komershan/nethacker@7cd0e07a9dc9c2b7d0e2c5309fb96feb9dd2c215",
-    "github.com/daglar-dragomirov/nethacker@0d0ea59eda917011b78413c72c2d6a79d5c8ca4c",
-    "github.com/daglar-dragomirov/nethacker@14626734f3d8a0702b52e67996ba86b57ef0b852",
-    "github.com/daglar-dragomirov/nethacker@311a331323f9302b050d47ca0cb3e0a2cc7a31eb",
-    "github.com/daglar-dragomirov/nethacker@5d0d455a1585271143aa47fbd5b44c2f6dae7d4b",
-    "github.com/daglar-dragomirov/nethacker@8ce023a8f681e7366d5f54ca419f314ac874ac59",
-    "github.com/daglar-dragomirov/nethacker@ba65402150db96307951f6de1a18def829d13107",
-    "github.com/daglar-dragomirov/nethacker@dd8d5c321ea5c9a446fd425c2f02f39079406df9",
-    "github.com/daglar-dragomirov/nethacker@f135bf1e2356ceedf38cbe94ffab8590c4e1a40e",
-    "github.com/eL1fe/nethacker@5fb52f1817758c8cbb2b9ee767c2e3a239b63d73",
-    "github.com/vkurenkov/nethacker@f15bb8c8e01d905d1946e32bfd2558e17394eab6",
-    "github.com/vlomshakov/nethacker@94016e19ff133adc0d1b321bc14a7beb74d4f366"
+    "github.com/daglar-dragomirov/nethacker@8ce023a8f681e7366d5f54ca419f314ac874ac59"
   ],
   "entrypoint": "bot.py"
 }

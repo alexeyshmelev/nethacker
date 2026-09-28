@@ -1,11 +1,3 @@
-# NetHack identity portfolio
+# Private-leader Samurai router
 
-This deterministic player selects a source bot for each of NetHackers' 73 starting
-characters. On its first two actions it opens and closes NetHack's attributes
-screen to read the starting role, race, alignment, and sex without advancing
-the game turn. `identity-choices.json` contains the routing table.
-
-The source packages are renamed to keep their Python imports separate.
-`nethackers.solution.json` lists every upstream commit used by this portfolio.
-The underlying AutoAscend code carries the license in `LICENSE`; consult the
-linked upstream repositories for their additional notices.
+Uses daglar-dragomirov 5d0d455 for 71 identities and 8ce023a for both Samurai identities. The routing decision is made from the starting attributes. See nethackers.solution.json for source commits.
