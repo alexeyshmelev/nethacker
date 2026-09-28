@@ -1,6 +1,6 @@
 import nle.nethack as nh
 
-from s5d0d455 import objects as O
+from s8ce023a import objects as O
 
 
 class InventoryItems:

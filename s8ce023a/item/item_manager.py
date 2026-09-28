@@ -4,10 +4,10 @@ import re
 import nle.nethack as nh
 from nle.nethack import actions as A
 
-from s5d0d455 import objects as O, utils
-from s5d0d455.character import Character
-from s5d0d455.glyph import MON
-from s5d0d455.item import Item
+from s8ce023a import objects as O, utils
+from s8ce023a.character import Character
+from s8ce023a.glyph import MON
+from s8ce023a.item import Item
 
 
 class ContainerContent:
