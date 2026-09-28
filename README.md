@@ -1,0 +1,1 @@
+NetHackers portfolio derived from daglar-dragomirov/nethacker@bdf6eb25. Four identity routes use the existing 311a331 Archeologist and d956abf Rogue engines: lawful human Archeologists and chaotic human Rogues. Other identities retain the parent routes. Evaluate before comparing leaderboard results; no ascension is claimed.
