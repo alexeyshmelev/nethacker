@@ -1,8 +1,8 @@
 import nle.nethack as nh
 
-from s5d0d455 import objects as O
-from s5d0d455.glyph import MON, WEA
-from s5d0d455 import jf_config
+from s8ce023a import objects as O
+from s8ce023a.glyph import MON, WEA
+from s8ce023a import jf_config
 
 
 class Item:
