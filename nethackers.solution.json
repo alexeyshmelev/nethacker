@@ -1,12 +1,13 @@
 {
   "schema": "nethackers.solution/v1",
-  "name": "private-leader-69ba-samurai-start-rank",
+  "name": "private-gnomish-healer-hybrid",
   "root": ".",
   "parents": [
     "github.com/daglar-dragomirov/nethacker@69baf4943e2f47a23715b3814438b180c3c64b75"
   ],
   "influences": [
-    "github.com/daglar-dragomirov/nethacker@8ce023a8f681e7366d5f54ca419f314ac874ac59"
+    "github.com/daglar-dragomirov/nethacker@8ce023a8f681e7366d5f54ca419f314ac874ac59",
+    "github.com/vlomshakov/nethacker@21db872529ff794a3daf14174f20fe92b2a2b2cf"
   ],
   "entrypoint": "bot.py"
 }
