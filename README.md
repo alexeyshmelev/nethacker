@@ -1,1 +1,3 @@
-NetHackers portfolio derived from daglar-dragomirov/nethacker@bdf6eb25. Four identity routes use the existing 311a331 Archeologist and d956abf Rogue engines: lawful human Archeologists and chaotic human Rogues. Other identities retain the parent routes. Evaluate before comparing leaderboard results; no ascension is claimed.
+# Private-leader Samurai router
+
+Uses daglar-dragomirov 5d0d455 for 71 identities and 8ce023a for both Samurai identities. The routing decision is made from the starting attributes. See nethackers.solution.json for source commits.
