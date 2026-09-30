@@ -16,83 +16,83 @@ os.environ.setdefault("NUMBA_CACHE_DIR", str(_cache_root / "numba"))
 import importlib  # noqa: E402
 import re  # noqa: E402
 
-# identity -> variant package, chosen by public mean (see build_portfolio.py)
+# identity -> variant package, chosen on held-out games (see build_ident.py)
 CHOICE = {
-    "arc-dwa-law-fem": "pf_v38",
-    "arc-dwa-law-mal": "pf_v38",
-    "arc-gno-neu-fem": "pf_v36",
-    "arc-gno-neu-mal": "pf_v36",
-    "arc-hum-law-fem": "ddj",
-    "arc-hum-law-mal": "ddj",
-    "arc-hum-neu-fem": "pf_v37",
-    "arc-hum-neu-mal": "pf_v36",
-    "bar-hum-cha-fem": "pf_v41x",
-    "bar-hum-cha-mal": "pf_v41x",
-    "bar-hum-neu-fem": "pf_v36",
-    "bar-hum-neu-mal": "pf_v37",
-    "bar-orc-cha-fem": "pf_v38",
-    "bar-orc-cha-mal": "pf_v41x",
-    "cav-dwa-law-fem": "pf_vk_s23",
-    "cav-dwa-law-mal": "pf_vk_s23",
-    "cav-gno-neu-fem": "pf_v41x",
-    "cav-gno-neu-mal": "pf_v41x",
-    "cav-hum-law-fem": "pf_v38",
-    "cav-hum-law-mal": "pf_v41x",
-    "cav-hum-neu-fem": "pf_vk_s23",
-    "cav-hum-neu-mal": "pf_vk_s23",
-    "hea-gno-neu-fem": "pf_vlom_9ef4063",
-    "hea-gno-neu-mal": "pf_vlom_9ef4063",
-    "hea-hum-neu-fem": "pf_v36",
-    "hea-hum-neu-mal": "pf_v36",
-    "kni-hum-law-fem": "pf_v37",
-    "kni-hum-law-mal": "pf_v37",
-    "mon-hum-cha-fem": "pf_v38",
-    "mon-hum-cha-mal": "pf_v38",
-    "mon-hum-law-fem": "pf_v35",
-    "mon-hum-law-mal": "pf_v35",
-    "mon-hum-neu-fem": "pf_vk_s23",
-    "mon-hum-neu-mal": "pf_vk_s23",
-    "pri-elf-cha-fem": "pf_kef_d42161f",
-    "pri-elf-cha-mal": "pf_v37",
-    "pri-hum-cha-fem": "pf_v35",
-    "pri-hum-cha-mal": "pf_v35",
-    "pri-hum-law-fem": "pf_v38",
-    "pri-hum-law-mal": "pf_v38",
-    "pri-hum-neu-fem": "pf_v37",
-    "pri-hum-neu-mal": "pf_kef_d42161f",
-    "ran-elf-cha-fem": "pf_v37",
-    "ran-elf-cha-mal": "pf_kef_d42161f",
-    "ran-gno-neu-fem": "pf_v36",
-    "ran-gno-neu-mal": "pf_v36",
-    "ran-hum-cha-fem": "pf_v36",
-    "ran-hum-cha-mal": "pf_v36",
-    "ran-hum-neu-fem": "pf_v38",
-    "ran-hum-neu-mal": "pf_v38",
-    "ran-orc-cha-fem": "pf_v37",
-    "ran-orc-cha-mal": "pf_v37",
-    "rog-hum-cha-fem": "rog",
-    "rog-hum-cha-mal": "rog",
-    "rog-orc-cha-fem": "pf_v36",
-    "rog-orc-cha-mal": "pf_v36",
-    "sam-hum-law-fem": "pf_v37",
-    "sam-hum-law-mal": "pf_v37",
-    "tou-hum-neu-fem": "pf_v38",
-    "tou-hum-neu-mal": "pf_v41x",
-    "val-dwa-law-fem": "pf_vk_s23",
-    "val-hum-law-fem": "pf_v38",
-    "val-hum-neu-fem": "pf_v37",
-    "wiz-elf-cha-fem": "pf_v36",
-    "wiz-elf-cha-mal": "pf_v41x",
-    "wiz-gno-neu-fem": "pf_v36",
-    "wiz-gno-neu-mal": "pf_v37",
-    "wiz-hum-cha-fem": "pf_vk_s23",
-    "wiz-hum-cha-mal": "pf_vk_s23",
-    "wiz-hum-neu-fem": "pf_vk_s23",
-    "wiz-hum-neu-mal": "pf_vk_s23",
-    "wiz-orc-cha-fem": "pf_v36",
-    "wiz-orc-cha-mal": "pf_v36"
+    "arc-dwa-law-fem": "pf_base",
+    "arc-dwa-law-mal": "pf_base",
+    "arc-gno-neu-fem": "pf_base",
+    "arc-gno-neu-mal": "pf_base",
+    "arc-hum-law-fem": "pf_base",
+    "arc-hum-law-mal": "pf_base",
+    "arc-hum-neu-fem": "pf_base",
+    "arc-hum-neu-mal": "pf_base",
+    "bar-hum-cha-fem": "pf_base",
+    "bar-hum-cha-mal": "pf_base",
+    "bar-hum-neu-fem": "pf_base",
+    "bar-hum-neu-mal": "pf_base",
+    "bar-orc-cha-fem": "pf_base",
+    "bar-orc-cha-mal": "pf_base",
+    "cav-dwa-law-fem": "pf_base",
+    "cav-dwa-law-mal": "pf_base",
+    "cav-gno-neu-fem": "pf_base",
+    "cav-gno-neu-mal": "pf_base",
+    "cav-hum-law-fem": "pf_base",
+    "cav-hum-law-mal": "pf_base",
+    "cav-hum-neu-fem": "pf_base",
+    "cav-hum-neu-mal": "pf_base",
+    "hea-gno-neu-fem": "pf_hg",
+    "hea-gno-neu-mal": "pf_hg",
+    "hea-hum-neu-fem": "pf_hh",
+    "hea-hum-neu-mal": "pf_hh",
+    "kni-hum-law-fem": "pf_base",
+    "kni-hum-law-mal": "pf_base",
+    "mon-hum-cha-fem": "pf_base",
+    "mon-hum-cha-mal": "pf_base",
+    "mon-hum-law-fem": "pf_base",
+    "mon-hum-law-mal": "pf_base",
+    "mon-hum-neu-fem": "pf_base",
+    "mon-hum-neu-mal": "pf_base",
+    "pri-elf-cha-fem": "pf_base",
+    "pri-elf-cha-mal": "pf_base",
+    "pri-hum-cha-fem": "pf_pa",
+    "pri-hum-cha-mal": "pf_pa",
+    "pri-hum-law-fem": "pf_pa",
+    "pri-hum-law-mal": "pf_pa",
+    "pri-hum-neu-fem": "pf_pa",
+    "pri-hum-neu-mal": "pf_pa",
+    "ran-elf-cha-fem": "pf_base",
+    "ran-elf-cha-mal": "pf_base",
+    "ran-gno-neu-fem": "pf_base",
+    "ran-gno-neu-mal": "pf_base",
+    "ran-hum-cha-fem": "pf_base",
+    "ran-hum-cha-mal": "pf_base",
+    "ran-hum-neu-fem": "pf_base",
+    "ran-hum-neu-mal": "pf_base",
+    "ran-orc-cha-fem": "pf_base",
+    "ran-orc-cha-mal": "pf_base",
+    "rog-hum-cha-fem": "pf_base",
+    "rog-hum-cha-mal": "pf_base",
+    "rog-orc-cha-fem": "pf_base",
+    "rog-orc-cha-mal": "pf_base",
+    "sam-hum-law-fem": "pf_v35",
+    "sam-hum-law-mal": "pf_v35",
+    "tou-hum-neu-fem": "pf_base",
+    "tou-hum-neu-mal": "pf_base",
+    "val-dwa-law-fem": "pf_base",
+    "val-hum-law-fem": "pf_base",
+    "val-hum-neu-fem": "pf_base",
+    "wiz-elf-cha-fem": "pf_base",
+    "wiz-elf-cha-mal": "pf_base",
+    "wiz-gno-neu-fem": "pf_base",
+    "wiz-gno-neu-mal": "pf_base",
+    "wiz-hum-cha-fem": "pf_base",
+    "wiz-hum-cha-mal": "pf_base",
+    "wiz-hum-neu-fem": "pf_base",
+    "wiz-hum-neu-mal": "pf_base",
+    "wiz-orc-cha-fem": "pf_base",
+    "wiz-orc-cha-mal": "pf_base"
 }
-DEFAULT = "pf_v37"
+DEFAULT = "pf_base"
 _ROLES = {"Archeologist": "arc", "Barbarian": "bar", "Caveman": "cav", "Cavewoman": "cav", "Healer": "hea",
           "Knight": "kni", "Monk": "mon", "Priest": "pri", "Priestess": "pri", "Ranger": "ran", "Rogue": "rog",
           "Samurai": "sam", "Tourist": "tou", "Valkyrie": "val", "Wizard": "wiz"}
@@ -133,6 +133,27 @@ def _identity(observation):
     gender = "fem" if gender == "female" or role in _FEMALE_ROLES else "mal"
     return f"{_ROLES[role]}-{_RACES[race]}-{_ALIGNS[align]}-{gender}"
 
+# role -> package when the race cannot be read (see build_ident.py)
+FALLBACK = {"hea": "pf_hg", "pri": "pf_base"}
+_RE_ALIGN = re.compile(r"\b(Lawful|Neutral|Chaotic)\b")
+
+
+def _by_status(observation):
+    try:
+        text = bytes(observation["tty_chars"]).decode("latin-1", "replace")
+    except Exception:  # noqa: BLE001
+        return None
+    t = _RE_TITLE.search(text)
+    a = _RE_ALIGN.search(text)
+    if t is None or t.group(1) not in _TITLES:
+        return None
+    role = _ROLES[_TITLES[t.group(1)]]
+    align = _ALIGNS[a.group(1).lower()] if a else None
+    pkgs = {p for k, p in CHOICE.items() if k.startswith(role + "-") and (align is None or k.split("-")[2] == align)}
+    if len(pkgs) == 1:
+        return pkgs.pop()
+    return FALLBACK.get(role)
+
 
 class Bot:
     def __init__(self) -> None:
@@ -144,6 +165,8 @@ class Bot:
         pkg = CHOICE.get(ident)
         if pkg is None and ident is not None:
             pkg = CHOICE.get(ident[:-3] + ("mal" if ident.endswith("fem") else "fem"))
+        if pkg is None:
+            pkg = _by_status(initial_observation)
         pkg = pkg or DEFAULT
         if pkg not in self._drivers:
             self._drivers[pkg] = importlib.import_module("adapter_" + pkg).AutoAscendDriver()
