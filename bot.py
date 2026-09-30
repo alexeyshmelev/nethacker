@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import importlib
+import json
 import os
+import re
 import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+import nle.nethack as nh
 from nethackers.contracts.bot import ArenaBot
 
 _cache_root = Path(tempfile.gettempdir()) / "nethack_arena_submission_cache"
@@ -13,150 +17,70 @@ _cache_root.mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("XDG_CACHE_HOME", str(_cache_root / "xdg"))
 os.environ.setdefault("NUMBA_CACHE_DIR", str(_cache_root / "numba"))
 
-import importlib  # noqa: E402
-import re  # noqa: E402
-
-# identity -> variant package, chosen by public mean (see build_portfolio.py)
-CHOICE = {
-    "arc-dwa-law-fem": "pf_v38",
-    "arc-dwa-law-mal": "pf_v38",
-    "arc-gno-neu-fem": "pf_v36",
-    "arc-gno-neu-mal": "pf_v36",
-    "arc-hum-law-fem": "ddj",
-    "arc-hum-law-mal": "ddj",
-    "arc-hum-neu-fem": "pf_v37",
-    "arc-hum-neu-mal": "pf_v36",
-    "bar-hum-cha-fem": "pf_v41x",
-    "bar-hum-cha-mal": "pf_v41x",
-    "bar-hum-neu-fem": "pf_v36",
-    "bar-hum-neu-mal": "pf_v37",
-    "bar-orc-cha-fem": "pf_v38",
-    "bar-orc-cha-mal": "pf_v41x",
-    "cav-dwa-law-fem": "pf_vk_s23",
-    "cav-dwa-law-mal": "pf_vk_s23",
-    "cav-gno-neu-fem": "pf_v41x",
-    "cav-gno-neu-mal": "pf_v41x",
-    "cav-hum-law-fem": "pf_v38",
-    "cav-hum-law-mal": "pf_v41x",
-    "cav-hum-neu-fem": "pf_vk_s23",
-    "cav-hum-neu-mal": "pf_vk_s23",
-    "hea-gno-neu-fem": "pf_vlom_9ef4063",
-    "hea-gno-neu-mal": "pf_vlom_9ef4063",
-    "hea-hum-neu-fem": "pf_v36",
-    "hea-hum-neu-mal": "pf_v36",
-    "kni-hum-law-fem": "pf_v37",
-    "kni-hum-law-mal": "pf_v37",
-    "mon-hum-cha-fem": "pf_v38",
-    "mon-hum-cha-mal": "pf_v38",
-    "mon-hum-law-fem": "pf_v35",
-    "mon-hum-law-mal": "pf_v35",
-    "mon-hum-neu-fem": "pf_vk_s23",
-    "mon-hum-neu-mal": "pf_vk_s23",
-    "pri-elf-cha-fem": "pf_kef_d42161f",
-    "pri-elf-cha-mal": "pf_v37",
-    "pri-hum-cha-fem": "pf_v35",
-    "pri-hum-cha-mal": "pf_v35",
-    "pri-hum-law-fem": "pf_v38",
-    "pri-hum-law-mal": "pf_v38",
-    "pri-hum-neu-fem": "pf_v37",
-    "pri-hum-neu-mal": "pf_kef_d42161f",
-    "ran-elf-cha-fem": "pf_v37",
-    "ran-elf-cha-mal": "pf_kef_d42161f",
-    "ran-gno-neu-fem": "pf_v36",
-    "ran-gno-neu-mal": "pf_v36",
-    "ran-hum-cha-fem": "pf_v36",
-    "ran-hum-cha-mal": "pf_v36",
-    "ran-hum-neu-fem": "pf_v38",
-    "ran-hum-neu-mal": "pf_v38",
-    "ran-orc-cha-fem": "pf_v37",
-    "ran-orc-cha-mal": "pf_v37",
-    "rog-hum-cha-fem": "rog",
-    "rog-hum-cha-mal": "rog",
-    "rog-orc-cha-fem": "pf_v36",
-    "rog-orc-cha-mal": "pf_v36",
-    "sam-hum-law-fem": "pf_v37",
-    "sam-hum-law-mal": "pf_v37",
-    "tou-hum-neu-fem": "pf_v38",
-    "tou-hum-neu-mal": "pf_v41x",
-    "val-dwa-law-fem": "pf_vk_s23",
-    "val-hum-law-fem": "pf_v38",
-    "val-hum-neu-fem": "pf_v37",
-    "wiz-elf-cha-fem": "pf_v36",
-    "wiz-elf-cha-mal": "pf_v41x",
-    "wiz-gno-neu-fem": "pf_v36",
-    "wiz-gno-neu-mal": "pf_v37",
-    "wiz-hum-cha-fem": "pf_vk_s23",
-    "wiz-hum-cha-mal": "pf_vk_s23",
-    "wiz-hum-neu-fem": "pf_vk_s23",
-    "wiz-hum-neu-mal": "pf_vk_s23",
-    "wiz-orc-cha-fem": "pf_v36",
-    "wiz-orc-cha-mal": "pf_v36"
-}
-DEFAULT = "pf_v37"
-_ROLES = {"Archeologist": "arc", "Barbarian": "bar", "Caveman": "cav", "Cavewoman": "cav", "Healer": "hea",
-          "Knight": "kni", "Monk": "mon", "Priest": "pri", "Priestess": "pri", "Ranger": "ran", "Rogue": "rog",
-          "Samurai": "sam", "Tourist": "tou", "Valkyrie": "val", "Wizard": "wiz"}
+_ACTION_TO_INDEX = {int(action): index for index, action in enumerate(nh.ACTIONS)}
+_ATTR = _ACTION_TO_INDEX[int(nh.Command.ATTRIBUTES)]
+_ESC = _ACTION_TO_INDEX[int(nh.Command.ESC)]
+_CHOICES = json.loads((Path(__file__).resolve().parent / "identity-choices.json").read_text())
 _RACES = {"human": "hum", "elven": "elf", "dwarven": "dwa", "gnomish": "gno", "orcish": "orc"}
-_ALIGNS = {"lawful": "law", "neutral": "neu", "chaotic": "cha"}
-_RE = re.compile(r"You are an? (lawful|neutral|chaotic) (?:(male|female) )?(human|elven|dwarven|gnomish|orcish) "
-                 r"(" + "|".join(_ROLES) + r")\b")
-_FEMALE_ROLES = {"Cavewoman", "Priestess", "Valkyrie"}
-_RE_CUT = re.compile(r"You are an? (lawful|neutral|chaotic) (?:(male|female) )?(human|elven|dwarven|gnomish|orcish)")
-_RE_TITLE = re.compile(r"Agent the (\w+)")
-# Xp 1 rank titles (role.c)
-_TITLES = {"Digger": "Archeologist", "Plunderer": "Barbarian", "Plunderess": "Barbarian",
-           "Troglodyte": "Caveman", "Rhizotomist": "Healer", "Gallant": "Knight", "Candidate": "Monk",
-           "Aspirant": "Priest", "Tenderfoot": "Ranger", "Footpad": "Rogue", "Hatamoto": "Samurai",
-           "Rambler": "Tourist", "Stripling": "Valkyrie", "Evoker": "Wizard"}
+_ROLES = {
+    "Archeologist": "arc", "Barbarian": "bar", "Caveman": "cav",
+    "Cavewoman": "cav", "Healer": "hea", "Knight": "kni",
+    "Monk": "mon", "Priest": "pri", "Priestess": "pri",
+    "Ranger": "ran", "Rogue": "rog", "Samurai": "sam",
+    "Tourist": "tou", "Valkyrie": "val", "Wizard": "wiz",
+}
+_ALIGNMENTS = {"lawful": "law", "neutral": "neu", "chaotic": "cha"}
 
 
-def _identity(observation):
-    texts = []
-    for key in ("message", "tty_chars"):
-        try:
-            texts.append(bytes(observation[key]).decode("latin-1", "replace"))
-        except Exception:  # noqa: BLE001
-            pass
-    text = " ".join(texts)
-    m = _RE.search(text)
-    if m is not None:
-        align, gender, race, role = m.groups()
-    else:
-        # an 80-column welcome line cuts the role off ("... neutral female gnomish"): take alignment, gender
-        # and race from it and the role from the status line's Xp 1 rank title ("Agent the Digger")
-        m = _RE_CUT.search(text)
-        t = _RE_TITLE.search(text)
-        if m is None or t is None or t.group(1) not in _TITLES:
-            return None
-        align, gender, race = m.groups()
-        role = _TITLES[t.group(1)]
-    gender = "fem" if gender == "female" or role in _FEMALE_ROLES else "mal"
-    return f"{_ROLES[role]}-{_RACES[race]}-{_ALIGNS[align]}-{gender}"
+def _identity(observation: Mapping[str, Any]) -> str | None:
+    screen = " ".join(bytes(row).decode("ascii", "replace") for row in observation["tty_chars"])
+    background = re.search(r"a level [0-9]+ (?:(female|male) )?([A-Za-z]+) ([A-Za-z]+)\.", screen)
+    alignment = re.search(r"You are (lawful|neutral|chaotic), on a mission", screen)
+    if not background or not alignment:
+        return None
+    gender, race_name, role_name = background.groups()
+    gender = gender or {"Cavewoman": "female", "Caveman": "male", "Priestess": "female", "Priest": "male", "Valkyrie": "female"}.get(role_name)
+    race = _RACES.get(race_name)
+    role = _ROLES.get(role_name)
+    align = _ALIGNMENTS.get(alignment.group(1))
+    if not race or not role or not align or not gender:
+        return None
+    return f"{role}-{race}-{align}-{'fem' if gender == 'female' else 'mal'}"
 
 
 class Bot:
     def __init__(self) -> None:
-        self._drivers = {}
+        self._phase = "attributes"
         self._driver = None
 
-    def reset(self, initial_observation):
-        ident = _identity(initial_observation)
-        pkg = CHOICE.get(ident)
-        if pkg is None and ident is not None:
-            pkg = CHOICE.get(ident[:-3] + ("mal" if ident.endswith("fem") else "fem"))
-        pkg = pkg or DEFAULT
-        if pkg not in self._drivers:
-            self._drivers[pkg] = importlib.import_module("adapter_" + pkg).AutoAscendDriver()
-        self._driver = self._drivers[pkg]
-        self._driver.reset(initial_observation)
+    def reset(self, initial_observation: Mapping[str, Any]) -> None:
+        del initial_observation
+        self.close()
+        self._phase = "attributes"
 
-    def act(self, observation):
+    def act(self, observation: Mapping[str, Any]) -> int:
+        if self._phase == "attributes":
+            self._phase = "select"
+            return _ATTR
+        if self._phase == "select":
+            identity = _identity(observation)
+            alias = _CHOICES.get(identity, "base")
+            module = importlib.import_module(
+                "arena_adapter_" + alias if alias != "base" else "arena_adapter"
+            )
+            self._driver = module.AutoAscendDriver()
+            self._phase = "start"
+            return _ESC
+        if self._phase == "start":
+            self._driver.reset(observation)
+            self._phase = "play"
         return self._driver.act(observation)
 
-    def close(self):
-        for driver in self._drivers.values():
-            driver.close()
+    def close(self) -> None:
+        if self._driver is not None:
+            self._driver.close()
+            self._driver = None
 
 
-def make_agent():
+def make_agent() -> ArenaBot:
     return Bot()
