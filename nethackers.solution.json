@@ -1,10 +1,11 @@
 {
   "schema": "nethackers.solution/v1",
-  "name": "leader-b676-portfolio-screen",
+  "name": "public-b676-e29-sparse-v1",
   "root": ".",
   "parents": [
     "github.com/daglar-dragomirov/nethacker@b676c23a021a7ca8e977799c462b8a1499b17663",
-    "github.com/daglar-dragomirov/nethacker@e29eb8281b13784716d9121e4f01ec60c2bb2165"
+    "github.com/daglar-dragomirov/nethacker@e29eb8281b13784716d9121e4f01ec60c2bb2165",
+    "github.com/alexeyshmelev/nethacker@40d8b01b8a48a6bf7cdeb1f601141b90757828a0"
   ],
   "influences": [
     "github.com/DT6A/nethacker@464e1662a4cb60567c7946d2d952278c64eefe84",
